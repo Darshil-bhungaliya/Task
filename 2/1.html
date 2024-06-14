@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <label for="1st">1st Input</label>
+    <input type="number" id="1st" name="1st Input">
+
+    <label for="2nd">2nd Input</label>
+    <input type="number" id="2nd" name="2nd Input">
+
+    <label for="conditions">Conditions</label>
+    <select id="conditions">
+        <option value="0">Greater than</option>
+        <option value="1">Less than</option>
+        <option value="2">Equal to</option>
+    </select>
+    <button id="and" class="button" value="&&">AND</button>
+    <button id="or" class="button" value="||">OR</button>
+    <button id="submit" class="button" value="submit">Submit</button>
+    <br>
+    <b id="preoutput"></b>
+    <br>
+    <b id="result"></b>
+</body>
+<script>
+    let first = document.getElementById("1st");
+    let second = document.getElementById("2nd");
+    let select = document.getElementById("conditions");
+    let result1 = document.getElementById("result");
+    let preoutput = document.getElementById("preoutput");
+    let button = document.getElementsByClassName("button");
+    let currentexpression = "";
+
+    for (let i = 0; i < button.length; i++) {
+        button[i].addEventListener("click", (event) => {
+            addexpressions(event.target.value);
+        })
+    }
+    function addexpressions(operator) {
+        const num1 = parseInt(first.value)
+        const num2 = parseInt(second.value);
+        const condition = select.value;
+        if (!(num1 && num2 && condition)) {
+            alert("provide value")
+        }
+        function check(result) {
+            if (operator == "submit") {
+                currentexpression += ` ${result}`;
+                result1.innerText = `Final Result : ${eval(currentexpression)}`
+            } else {
+                currentexpression == "" ? currentexpression += ` ${result} ${operator}` : currentexpression = `(${currentexpression}` + ` ${result}) ${operator}`;
+            }
+        }
+    
+        let xyz = {'0': num1 > num2,'1': num1 < num2,'2': num1 == num2,}[condition];
+        check(xyz)
+        preoutput.innerText = currentexpression;
+        console.log(currentexpression);
+        first.value = "";
+        second.value = "";
+        select.value = "";
+    }
+</script>
+</html>
