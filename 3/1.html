@@ -10,7 +10,6 @@
 <body>
     <label for="minutes">minutes</label>
     <input type="number" id="minutes" name="minutes">
-
     <label for="conditions">Conditions</label>
     <select id="conditions">
         <option value="0">Time hide</option>
@@ -38,7 +37,6 @@
     let End = document.getElementById("End");
     let minutes = document.getElementById("minutes");
     let conditions = document.getElementById("conditions");
-
     let hour = 0;
     let minute = 0;
     let second = 0;
@@ -46,28 +44,21 @@
     let conditionvalue;
     let timer;
     let getrefreshvalue;
-
-    function updateVariables(refreshhr, refreshmin, refreshsec) {
-        hour = refreshhr;
-        minute = refreshmin;
-        second = refreshsec;
-    }
-    function timereset() {
-        timer = true;
-        let resethour = +localStorage.getItem("resethour")
-        let resetminute = +localStorage.getItem("resetminute")
-        let resetsec = +localStorage.getItem("resetsec")
-        updateVariables(resethour, resetminute, resetsec)
-        updateTime(resethour, resetminute, second)
-    }
     function resetfn() {
         let finaltimer = localStorage.getItem("timer")
-        if (finaltimer == "false") {
-            timereset()
-            stopwatch()
-        }
-        else {
-            timereset()
+        if (finaltimer == "false" || finaltimer == "true") {
+            timer = true;
+            let resethour = +localStorage.getItem("resethour")
+            let resetminute = +localStorage.getItem("resetminute")
+            let resetsec = +localStorage.getItem("resetsec")
+            resetminute > 60 ? (resethour = Math.floor(resetminute / 60), resetminute = +resetminute - 60 * resethour) : resetminute = +resetminute;
+            hour = resethour;
+            minute = resetminute;
+            second = resetsec;
+            document.getElementById('hr').innerHTML = resethour < 10 ? "0" + resethour : resethour;
+            document.getElementById('min').innerHTML = minute < 10 ? "0" + resetminute : resetminute;
+            document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
+            if (finaltimer == "false") stopwatch()
         }
     }
     start.addEventListener("click", () => {
@@ -80,17 +71,14 @@
         second = refreshsec || 60;
         let resetminute = +minutes.value - 1
         getrefreshvalue = +minutes.value - 1;
-        if (!minutes.value) return alert("Please provide value") && (timer = false);
-        hour = Math.floor(minutevalue / 60);
-        minute = minutevalue > 60 ? minutevalue - 60 * hour : minutevalue;
+        if (!minutes.value) return alert("Please provide value"), timer = false;
+        minutevalue > 60 ? (hour = Math.floor(minutevalue / 60), minute = +minutevalue - 60 * hour) : minute = +minutevalue;
         localStorage.setItem("resethour", hour)
-        localStorage.setItem("resetminute", minute)
+        localStorage.setItem("resetminute", resetminute)
         localStorage.setItem("resetsec", 60)
         stopwatch();
     })
-    stop.addEventListener("click", () => {
-        timer = false;
-    })
+    stop.addEventListener("click", () => { timer = false })
     reset.addEventListener("click", resetfn);
     End.addEventListener("click", () => {
         timer = false;
@@ -98,51 +86,46 @@
         document.getElementById('hr').innerHTML = "00";
         document.getElementById('min').innerHTML = "00";
         document.getElementById('sec').innerHTML = "00";
-        time.style.display = ""
         localStorage.clear()
         hour = 0
     })
     function stopwatch() {
         localStorage.setItem("timer", timer)
-        if (timer) {
+        if (!timer) return
+        else {
             if (second) second--;
             if (second == 0 && minute) minute--, second = 60;
-            if (minute == 0 && hour) hour--, minute = 59, second = 60;
-            updateTime(hour, minute, second)
+            if (minute == 0 && hour) hour--, minute = 60, second = 60;
+            let finalhour = hour;
+            let finalminute = minute;
+            let finalsecond = second;
+            document.getElementById('hr').innerHTML = hour < 10 ? "0" + hour : hour;
+            document.getElementById('min').innerHTML = minute < 10 ? "0" + minute : minute;
+            document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
             setTimeout(stopwatch, 100)
-            localStorage.setItem("refreshhr", hour)
-            localStorage.setItem("refreshmin", minute)
-            localStorage.setItem("refreshsec", second)
+            localStorage.setItem("refreshhr", finalhour)
+            localStorage.setItem("refreshmin", finalminute)
+            localStorage.setItem("refreshsec", finalsecond)
         }
         if (hour == 0 && minute == 0 && second == 0) {
-            conditionvalue == "1" ? resetfn() : time.style.display = "none";
+            conditionvalue == "1" ? resetfn() : time.style.display = "none"
         }
-    }
-    function updateTime(hour, minute, second) {
-        document.getElementById('hr').innerHTML = hour < 10 ? "0" + hour : hour;
-        document.getElementById('min').innerHTML = minute < 10 ? "0" + minute : minute;
-        document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
-    }
-    function loadDisplay() {
-        let refreshhr = +localStorage.getItem("refreshhr")
-        let refreshmin = +localStorage.getItem("refreshmin")
-        let refreshsec = +localStorage.getItem("refreshsec")
-        updateTime(refreshhr, refreshmin, refreshsec)
     }
     window.addEventListener("load", () => {
-        let finaltimer = localStorage.getItem("timer")
-        minutes.value = localStorage.getItem("getrefreshvalue")
-        if (finaltimer == "true") {
-            timer = true;
-            loadDisplay();
-            if (refreshmin && refreshsec) updateVariables(refreshhr, refreshmin, refreshsec);
-            stopwatch()
-        } else {
-            loadDisplay()
-            timer = false;
-            updateVariables(refreshhr, refreshmin, refreshsec)
-            stopwatch()
-        }
-    })
+        let finaltimer = localStorage.getItem("timer");
+        minutes.value = localStorage.getItem("getrefreshvalue");
+        let refreshhr = +localStorage.getItem("refreshhr");
+        let refreshmin = +localStorage.getItem("refreshmin");
+        let refreshsec = +localStorage.getItem("refreshsec");
+        document.getElementById('hr').innerHTML = refreshhr < 10 ? "0" + refreshhr : refreshhr;
+        document.getElementById('min').innerHTML = refreshmin < 10 ? "0" + refreshmin : refreshmin;
+        document.getElementById('sec').innerHTML = refreshsec < 10 ? "0" + refreshsec : refreshsec;
+        timer = finaltimer === "true";
+        hour = refreshhr;
+        minute = refreshmin;
+        second = refreshsec;
+        stopwatch();
+    });
 </script>
+
 </html>

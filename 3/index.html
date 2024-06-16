@@ -55,12 +55,18 @@
             let resethour = +localStorage.getItem("resethour")
             let resetminute = +localStorage.getItem("resetminute")
             let resetsec = +localStorage.getItem("resetsec")
+            if (resetminute > 60) {
+                resethour = Math.floor(resetminute / 60);
+                resetminute = +resetminute - 60 * resethour;
+            } else {
+                resetminute = +resetminute;
+            }
             hour = resethour;
             minute = resetminute;
             second = resetsec;
             document.getElementById('hr').innerHTML = resethour < 10 ? "0" + resethour : resethour;
             document.getElementById('min').innerHTML = resetminute < 10 ? "0" + resetminute : resetminute;
-            document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
+            document.getElementById('sec').innerHTML = resetsec < 10 ? "0" + resetsec : resetsec;
             stopwatch()
         }
         if (finaltimer == "true") {
@@ -68,12 +74,18 @@
             let resethour = +localStorage.getItem("resethour")
             let resetminute = +localStorage.getItem("resetminute")
             let resetsec = +localStorage.getItem("resetsec")
+            if (resetminute > 60) {
+                resethour = Math.floor(resetminute / 60);
+                resetminute = +resetminute - 60 * resethour;
+            } else {
+                resetminute = +resetminute;
+            }
             hour = resethour;
             minute = resetminute;
             second = resetsec;
             document.getElementById('hr').innerHTML = resethour < 10 ? "0" + resethour : resethour;
             document.getElementById('min').innerHTML = resetminute < 10 ? "0" + resetminute : resetminute;
-            document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
+            document.getElementById('sec').innerHTML = resetsec < 10 ? "0" + resetsec : resetsec;
         }
     }
 
@@ -98,7 +110,7 @@
             minute = +minutevalue;
         }
         localStorage.setItem("resethour", hour)
-        localStorage.setItem("resetminute", minute)
+        localStorage.setItem("resetminute", resetminute)
         localStorage.setItem("resetsec", 60)
         stopwatch();
 
@@ -116,10 +128,8 @@
         document.getElementById('hr').innerHTML = "00";
         document.getElementById('min').innerHTML = "00";
         document.getElementById('sec').innerHTML = "00";
-        console.log(localStorage)
         localStorage.clear()
         hour = 0
-        console.log(localStorage)
     })
 
     function stopwatch() {
@@ -159,7 +169,7 @@
             document.getElementById('hr').innerHTML = finalhour;
             document.getElementById('min').innerHTML = finalminute;
             document.getElementById('sec').innerHTML = finalsecond;
-            setTimeout(stopwatch, 1000)
+            setTimeout(stopwatch, 10)
             localStorage.setItem("refreshhr", finalhour)
             localStorage.setItem("refreshmin", finalminute)
             localStorage.setItem("refreshsec", finalsecond)
