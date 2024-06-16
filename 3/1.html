@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <label for="minutes">minutes</label>
+    <input type="number" id="minutes" name="minutes">
+
+    <label for="conditions">Conditions</label>
+    <select id="conditions">
+        <option value="0">Time hide</option>
+        <option value="1">Time Restart</option>
+    </select>
+    <br>
+    <br>
+    <button id="start">Start</button>
+    <button id="reset">Restart</button>
+    <button id="stop">Stops</button>
+    <button id="End">End</button>
+    <div id="time">
+        <b class="digit" id="hr">00</b>
+        <b>:</b>
+        <b class="digit" id="min">00</b>
+        <b>:</b>
+        <b class="digit" id="sec">00</b>
+    </div>
+</body>
+<script>
+    let time = document.getElementById("time");
+    let start = document.getElementById("start");
+    let reset = document.getElementById("reset");
+    let stop = document.getElementById("stop");
+    let End = document.getElementById("End");
+    let minutes = document.getElementById("minutes");
+    let conditions = document.getElementById("conditions");
+
+    let hour = 0;
+    let minute = 0;
+    let second = 0;
+    let minutevalue;
+    let conditionvalue;
+    let timer;
+    let getrefreshvalue;
+
+    function updateVariables(refreshhr, refreshmin, refreshsec) {
+        hour = refreshhr;
+        minute = refreshmin;
+        second = refreshsec;
+    }
+    function timereset() {
+        timer = true;
+        let resethour = +localStorage.getItem("resethour")
+        let resetminute = +localStorage.getItem("resetminute")
+        let resetsec = +localStorage.getItem("resetsec")
+        updateVariables(resethour, resetminute, resetsec)
+        updateTime(resethour, resetminute, second)
+    }
+    function resetfn() {
+        let finaltimer = localStorage.getItem("timer")
+        if (finaltimer == "false") {
+            timereset()
+            stopwatch()
+        }
+        else {
+            timereset()
+        }
+    }
+    start.addEventListener("click", () => {
+        timer = true;
+        let refreshmin = +localStorage.getItem("refreshmin")
+        let refreshsec = +localStorage.getItem("refreshsec")
+        localStorage.setItem("getrefreshvalue", minutes.value)
+        minutevalue = refreshmin || +minutes.value - 1;
+        conditionvalue = conditions.value;
+        second = refreshsec || 60;
+        let resetminute = +minutes.value - 1
+        getrefreshvalue = +minutes.value - 1;
+        if (!minutes.value) return alert("Please provide value") && (timer = false);
+        hour = Math.floor(minutevalue / 60);
+        minute = minutevalue > 60 ? minutevalue - 60 * hour : minutevalue;
+        localStorage.setItem("resethour", hour)
+        localStorage.setItem("resetminute", minute)
+        localStorage.setItem("resetsec", 60)
+        stopwatch();
+    })
+    stop.addEventListener("click", () => {
+        timer = false;
+    })
+    reset.addEventListener("click", resetfn);
+    End.addEventListener("click", () => {
+        timer = false;
+        minutes.value = "";
+        document.getElementById('hr').innerHTML = "00";
+        document.getElementById('min').innerHTML = "00";
+        document.getElementById('sec').innerHTML = "00";
+        time.style.display = ""
+        localStorage.clear()
+        hour = 0
+    })
+    function stopwatch() {
+        localStorage.setItem("timer", timer)
+        if (timer) {
+            if (second) second--;
+            if (second == 0 && minute) minute--, second = 60;
+            if (minute == 0 && hour) hour--, minute = 59, second = 60;
+            updateTime(hour, minute, second)
+            setTimeout(stopwatch, 100)
+            localStorage.setItem("refreshhr", hour)
+            localStorage.setItem("refreshmin", minute)
+            localStorage.setItem("refreshsec", second)
+        }
+        if (hour == 0 && minute == 0 && second == 0) {
+            conditionvalue == "1" ? resetfn() : time.style.display = "none";
+        }
+    }
+    function updateTime(hour, minute, second) {
+        document.getElementById('hr').innerHTML = hour < 10 ? "0" + hour : hour;
+        document.getElementById('min').innerHTML = minute < 10 ? "0" + minute : minute;
+        document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
+    }
+    function loadDisplay() {
+        let refreshhr = +localStorage.getItem("refreshhr")
+        let refreshmin = +localStorage.getItem("refreshmin")
+        let refreshsec = +localStorage.getItem("refreshsec")
+        updateTime(refreshhr, refreshmin, refreshsec)
+    }
+    window.addEventListener("load", () => {
+        let finaltimer = localStorage.getItem("timer")
+        minutes.value = localStorage.getItem("getrefreshvalue")
+        if (finaltimer == "true") {
+            timer = true;
+            loadDisplay();
+            if (refreshmin && refreshsec) updateVariables(refreshhr, refreshmin, refreshsec);
+            stopwatch()
+        } else {
+            loadDisplay()
+            timer = false;
+            updateVariables(refreshhr, refreshmin, refreshsec)
+            stopwatch()
+        }
+    })
+</script>
+</html>
