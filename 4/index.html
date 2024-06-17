@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    table,
+    th,
+    td {
+        margin-top: 30px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 40px;
+    }
+</style>
+
+<body>
+    <form>
+        <label for="rating"><b>Id :</b></label>
+        <input type="number" id="idnum">
+        <label for="movie"><b>Movie Name:</b></label>
+        <input type="text" id="movie">
+        <label for="rating"><b>Rating :</b></label>
+        <input type="number" id="rating">
+        <label for="rating"><b>imdb_url :</b></label>
+        <input type="text" id="imdb">
+        <button type="submit" id="add">ADD</button>
+    </form>
+    <div id="showdata">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Movie Name</th>
+                <th>Rating</th>
+                <th>imdb_url</th>
+                <th>EDIT/DELETE</th>
+            </tr>
+            <tr>
+                <td id="tbid"></td>
+                <td id="tbmovie"></td>
+                <td id="tbrating"></td>
+                <td id="tbimdb"></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        let tbid = document.getElementById("tbid")
+        let tbmovie = document.getElementById("tbmovie")
+        document.getElementById("add").addEventListener("click", (e) => {
+            e.preventDefault()
+            tbid.innerText = document.getElementById("idnum").value;
+            tbmovie.innerText = document.getElementById("movie").value;
+            tbrating.innerText = document.getElementById("rating").value;
+            tbimdb.innerText = document.getElementById("imdb").value;
+        })
+
+        // fetch("https://dummyapi.online/api/movies")
+        //     .then(response => response.json())
+        //     .then(json => {
+        //         for (let i = 0; i < 4; i++) {
+        //             demo.innerText = JSON.stringify(json[i])
+        //         }
+        //     })
+
+
+    </script>
+</body>
+
+</html>
