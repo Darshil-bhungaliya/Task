@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-
 <body>
     <label for="minutes">minutes</label>
     <input type="number" id="minutes" name="minutes">
@@ -37,13 +35,7 @@
     let End = document.getElementById("End");
     let minutes = document.getElementById("minutes");
     let conditions = document.getElementById("conditions");
-    let hour = 0;
-    let minute = 0;
-    let second = 0;
-    let minutevalue;
-    let conditionvalue;
-    let timer;
-    let getrefreshvalue;
+    let hour = 0,minute = 0,second = 0, minutevalue, conditionvalue, timer, getrefreshvalue;
     function resetfn() {
         let finaltimer = localStorage.getItem("timer")
         if (finaltimer == "false" || finaltimer == "true") {
@@ -61,7 +53,7 @@
             if (finaltimer == "false") stopwatch()
         }
     }
-    start.addEventListener("click", () => {
+    start.addEventListener("click", (e) => {
         timer = true;
         let refreshmin = +localStorage.getItem("refreshmin")
         let refreshsec = +localStorage.getItem("refreshsec")
@@ -86,6 +78,7 @@
         document.getElementById('hr').innerHTML = "00";
         document.getElementById('min').innerHTML = "00";
         document.getElementById('sec').innerHTML = "00";
+        time.style.display = ""
         localStorage.clear()
         hour = 0
     })
@@ -102,7 +95,7 @@
             document.getElementById('hr').innerHTML = hour < 10 ? "0" + hour : hour;
             document.getElementById('min').innerHTML = minute < 10 ? "0" + minute : minute;
             document.getElementById('sec').innerHTML = second < 10 ? "0" + second : second;
-            setTimeout(stopwatch, 100)
+            setTimeout(stopwatch, 1000)
             localStorage.setItem("refreshhr", finalhour)
             localStorage.setItem("refreshmin", finalminute)
             localStorage.setItem("refreshsec", finalsecond)
@@ -127,5 +120,4 @@
         stopwatch();
     });
 </script>
-
 </html>
