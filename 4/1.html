@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            margin-top: 30px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="movieForm">
+        <label for="idnum"><b>ID :</b></label>
+        <input type="number" id="idnum">
+        <label for="movie"><b>Movie Name:</b></label>
+        <input type="text" id="movie">
+        <label for="rating"><b>Rating :</b></label>
+        <input type="number" id="rating">
+        <label for="imdb"><b>IMDB URL :</b></label>
+        <input type="text" id="imdb">
+        <button type="submit" id="add">ADD</button>
+    </form>
+    
+    <div id="showdata">
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Movie Name</th>
+                    <th>Rating</th>
+                    <th>IMDB URL</th>
+                    <th>EDIT/DELETE</th>
+                </tr>
+            </thead>
+            <tbody id="data">
+                <!-- Rows will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        document.getElementById("movieForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let id = document.getElementById("idnum").value;
+            let movie = document.getElementById("movie").value;
+            let rating = document.getElementById("rating").value;
+            let imdb = document.getElementById("imdb").value;
+
+            if (id === "") {
+                alert("Please enter an ID.");
+                return;
+            }
+
+            let table = document.getElementById("tab").getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            let cell1 = newRow.insertCell(0);
+            let cell2 = newRow.insertCell(1);
+            let cell3 = newRow.insertCell(2);
+            let cell4 = newRow.insertCell(3);
+            let cell5 = newRow.insertCell(4);
+
+            cell1.innerHTML = id;
+            cell2.innerHTML = movie;
+            cell3.innerHTML = rating;
+            cell4.innerHTML = imdb;
+            cell5.innerHTML = '<button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button>';
+
+            // Clear form fields after adding
+            document.getElementById("idnum").value = "";
+            document.getElementById("movie").value = "";
+            document.getElementById("rating").value = "";
+            document.getElementById("imdb").value = "";
+
+            // Add event listeners to the new buttons
+            let editBtn = cell5.querySelector('.edit-btn');
+            let deleteBtn = cell5.querySelector('.delete-btn');
+
+            editBtn.addEventListener('click', function() {
+                document.getElementById("idnum").value = cell1.innerHTML;
+                document.getElementById("movie").value = cell2.innerHTML;
+                document.getElementById("rating").value = cell3.innerHTML;
+                document.getElementById("imdb").value = cell4.innerHTML;
+                document.getElementById("add").innerHTML = "Edit";
+
+                // Update row on submit
+                document.getElementById("movieForm").onsubmit = function() {
+                    newRow.cells[0].innerHTML = document.getElementById("idnum").value;
+                    newRow.cells[1].innerHTML = document.getElementById("movie").value;
+                    newRow.cells[2].innerHTML = document.getElementById("rating").value;
+                    newRow.cells[3].innerHTML = document.getElementById("imdb").value;
+                    document.getElementById("add").innerHTML = "ADD";
+                    return false; // Prevent form submission
+                };
+            });
+
+            deleteBtn.addEventListener('click', function() {
+                table.deleteRow(newRow.rowIndex);
+            });
+        });
+
+        // Fetch data from API and populate the table initially
+        fetch("https://dummyapi.online/api/movies")
+            .then(response => response.json())
+            .then(json => {
+                let data = json.slice(0, 5);
+                let temp = "";
+                data.forEach(itemData => {
+                    temp += "<tr>";
+                    temp += "<td>" + itemData.id + "</td>";
+                    temp += "<td>" + itemData.movie + "</td>";
+                    temp += "<td>" + itemData.rating + "</td>";
+                    temp += "<td>" + itemData.imdb_url + "</td>";
+                    temp += '<td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>';
+                    temp += "</tr>";
+                });
+                document.getElementById('data').innerHTML = temp;
+
+                // Add event listeners to the edit and delete buttons in each row
+                let editBtns = document.querySelectorAll('.edit-btn');
+                let deleteBtns = document.querySelectorAll('.delete-btn');
+
+                editBtns.forEach((btn, index) => {
+                    btn.addEventListener('click', function() {
+                        // Populate form with current row data
+                        document.getElementById("idnum").value = data[index].id;
+                        document.getElementById("movie").value = data[index].movie;
+                        document.getElementById("rating").value = data[index].rating;
+                        document.getElementById("imdb").value = data[index].imdb_url;
+                        document.getElementById("add").innerHTML = "Edit";
+
+                        // Update row on submit
+                        document.getElementById("movieForm").onsubmit = function() {
+                            let editedRow = document.getElementById('data').rows[index];
+                            editedRow.cells[0].innerHTML = document.getElementById("idnum").value;
+                            editedRow.cells[1].innerHTML = document.getElementById("movie").value;
+                            editedRow.cells[2].innerHTML = document.getElementById("rating").value;
+                            editedRow.cells[3].innerHTML = document.getElementById("imdb").value;
+                            document.getElementById("add").innerHTML = "ADD";
+                            return false; // Prevent form submission
+                        };
+                    });
+                });
+
+                deleteBtns.forEach((btn, index) => {
+                    btn.addEventListener('click', function() {
+                        // Delete the corresponding row
+                        document.getElementById('data').deleteRow(index);
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
