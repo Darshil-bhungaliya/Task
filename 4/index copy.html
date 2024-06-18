@@ -25,14 +25,14 @@
 </style>
 
 <body>
-    <form>
-        <label for="rating"><b>Id :</b></label>
+    <form id="movieform">
+        <label for="idnum"><b>Id :</b></label>
         <input type="number" id="idnum">
         <label for="movie"><b>Movie Name:</b></label>
         <input type="text" id="movie">
         <label for="rating"><b>Rating :</b></label>
         <input type="number" id="rating">
-        <label for="rating"><b>imdb_url :</b></label>
+        <label for="imdb"><b>imdb_url :</b></label>
         <input type="text" id="imdb">
         <button type="submit" id="add">ADD</button>
     </form>
@@ -48,21 +48,13 @@
                 </tr>
             </thead>
             <tbody id="data">
-                <!-- <tr>
-                    <td id="tbid"></td>
-                    <td id="tbmovie"></td>
-                    <td id="tbrating"></td>
-                    <td id="tbimdb"></td>
-                    <td></td>
-                </tr> -->
+
             </tbody>
         </table>
     </div>
     <script>
-        let tbid = document.getElementById("tbid")
-        let tbmovie = document.getElementById("tbmovie")
         let add = document.getElementById("add")
-        document.getElementById("add").addEventListener("click", (e) => {
+        document.getElementById("movieform").addEventListener("submit",function submitfn(e){
             e.preventDefault()
             let table = document.getElementById("tab").getElementsByTagName('tbody')[0];
             let newRow = table.insertRow();
@@ -77,31 +69,47 @@
             cell4.innerHTML = document.getElementById("imdb").value;
             cell5.innerHTML = '<button id="edit-btn">Edit</button> <button id="delete-btn">Delete</button>';
 
-            document.getElementById("idnum").value = ""
-            document.getElementById("movie").value = ""
-            document.getElementById("rating").value = ""
-            document.getElementById("imdb").value = ""
             let editBtn = cell5.querySelector('#edit-btn');
             let deleteBtn = cell5.querySelector('#delete-btn');
 
-            editBtn.addEventListener('click', function () {
+            editBtn.addEventListener('click', function (e) {
                 document.getElementById("idnum").value = cell1.innerHTML
                 document.getElementById("movie").value = cell2.innerHTML
                 document.getElementById("rating").value = cell3.innerHTML
                 document.getElementById("imdb").value = cell4.innerHTML
                 add.innerHTML = "Edit";
+                let rowedit = e.target.parentElement.parentElement;
+                if (rowedit) {
+                    document.getElementById("add").addEventListener("click", function (e) {
+                        e.preventDefault()
+                        rowedit.cells[0].innerHTML = document.getElementById("idnum").value;
+                        rowedit.cells[1].innerHTML = document.getElementById("movie").value;
+                        rowedit.cells[2].innerHTML = document.getElementById("rating").value;
+                        rowedit.cells[3].innerHTML = document.getElementById("imdb").value;
+                        add.innerHTML = "Add";
+                        document.getElementById("idnum").value = ""
+                        document.getElementById("movie").value = ""
+                        document.getElementById("rating").value = ""
+                        document.getElementById("imdb").value = ""
+                        rowedit = ""
+                    })
+                }else{
+                    submitfn()
+                }
             });
-
             deleteBtn.addEventListener('click', function () {
-                table.deleteRow(newRow.rowIndex);
+                table.deleteRow(newRow.rowIndex - 1);
             });
 
+            // document.getElementById("idnum").value = ""
+            // document.getElementById("movie").value = ""
+            // document.getElementById("rating").value = ""
+            // document.getElementById("imdb").value = ""
         })
 
         fetch("https://dummyapi.online/api/movies")
             .then(response => response.json())
             .then(json => {
-
                 let data = json.slice(0, 5);
                 var temp = "";
                 data.forEach((itemData) => {
@@ -114,9 +122,6 @@
                 });
                 document.getElementById('data').innerHTML = temp;
             })
-
-
     </script>
 </body>
-
 </html>
