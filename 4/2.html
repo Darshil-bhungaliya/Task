@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <style>
-    table,th,td {
+    table,
+    th,
+    td {
         margin-top: 30px;
         border: 1px solid black;
         border-collapse: collapse;
     }
-    th,td {
+
+    th,
+    td {
         padding-top: 10px;
         padding-bottom: 20px;
         padding-left: 30px;
         padding-right: 40px;
     }
 </style>
+
 <body>
     <form id="movieform">
         <label for="idnum"><b>Id :</b></label>
@@ -101,14 +107,13 @@
                 Rating.value = selectedrow.cells[2].innerHTML
                 imdb.value = selectedrow.cells[3].innerHTML
                 add.innerHTML = "Edit"
-            }
-        })
-        document.getElementById("datalist").addEventListener("click", (e) => {
-            if (e.target.id == "delete") {
+            } else if (e.target.id == "delete") {
                 e.target.parentElement.parentElement.remove()
+                add.innerHTML = "Add"
                 clearvalue()
             }
         })
     </script>
 </body>
+
 </html>
