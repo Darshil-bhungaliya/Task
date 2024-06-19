@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quantity Highlighter</title>
+    <style>
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="number" id="quantityInput" onchange="updateQuantity()">
+
+    <div id="objectList">
+        <!-- objects will be rendered here -->
+    </div>
+
+    <button id="viewMoreBtn" style="display: none;" onclick="viewMore()">View More</button>
+
+    <script>
+        // Object data
+        var objects = [
+            { quantity: 10, discount: 5 },
+            { quantity: 20, discount: 10 },
+            { quantity: 15, discount: 7 },
+            { quantity: 30, discount: 12 }
+        ];
+
+        // Sort objects by quantity in ascending order
+        objects.sort((a, b) => a.quantity - b.quantity);
+
+        // Variables to manage state
+        var shownObjects = 2;
+        var highlightedObject = null;
+        var filteredObjects = objects.slice(); // Start with a copy of all objects
+
+        // Function to render the objects list
+        function renderObjects() {
+            var objectList = document.getElementById('objectList');
+            objectList.innerHTML = ''; // Clear previous content
+
+            // Loop through the filtered objects and create buttons
+            for (var i = 0; i < shownObjects; i++) {
+                var obj = filteredObjects[i];
+                var button = document.createElement('button');
+                button.textContent = `Quantity: ${obj.quantity}, Discount: ${obj.discount}`;
+                
+                // Highlight if this object is the highlighted one
+                if (highlightedObject === obj) {
+                    button.classList.add('highlight');
+                }
+
+                objectList.appendChild(button);
+            }
+
+            // Toggle the visibility of the view more button
+            var viewMoreBtn = document.getElementById('viewMoreBtn');
+            if (shownObjects >= filteredObjects.length) {
+                viewMoreBtn.style.display = 'none';
+            } else {
+                viewMoreBtn.style.display = 'block';
+            }
+        }
+
+        // Function to update the displayed objects based on input quantity
+        function updateQuantity() {
+            var inputField = document.getElementById('quantityInput');
+            var inputValue = parseInt(inputField.value);
+            highlightedObject = null;
+            filteredObjects = objects.filter(obj => obj.quantity >= inputValue);
+            if (filteredObjects.length > 0) {
+                highlightedObject = filteredObjects.find(obj => obj.quantity === inputValue);
+            }
+            renderObjects();
+        }
+
+        // Function to show more objects
+        function viewMore() {
+            shownObjects += 2;
+            renderObjects();
+        }
+
+        // Initial render
+        renderObjects();
+
+        // Event listener for input change
+        document.getElementById('quantityInput').addEventListener('change', updateQuantity);
+
+        // Event listener for view more button click
+        document.getElementById('viewMoreBtn').addEventListener('click', viewMore);
+    </script>
+</body>
+
+</html>
