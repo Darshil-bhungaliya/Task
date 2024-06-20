@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    table,th,td {
+        margin-top: 30px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th,td {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 40px;
+    }
+</style>
+<body>
+    <form id="movieform">
+        <label for="idnum"><b>Id :</b></label>
+        <input type="number" id="idnum" required min="0">
+        <label for="movie"><b>Movie Name:</b></label>
+        <input type="text" id="movie" size="50" required>
+        <label for="rating"><b>Rating :</b></label>
+        <input type="number" id="rating" required min="0" max="10" step="0.1">
+        <label for="imdb"><b>imdb_url :</b></label>
+        <input type="text" id="imdb" size="50" required>
+        <button type="submit" id="add">ADD</button>
+        <button type="submit" id="edit" style="display: none;">Edit</button>
+    </form>
+    <div id="showdata">
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Movie Name</th>
+                    <th>Rating</th>
+                    <th>imdb_url</th>
+                    <th>EDIT/DELETE</th>
+                </tr>
+            </thead>
+            <tbody id="datalist"></tbody>
+        </table>
+    </div>
+    <script>
+        async() =>{
+            try {
+                const response = await fetch('https://dummyapi.online/api/movies');
+                const movies = await response.json();
+                let data = movies.slice(0, 5);
+                data.forEach((movieData) => {
+                    let addrow = document.createElement('tr');
+                    addrow.innerHTML = `
+                <td>${movieData.id}</td><td>${movieData.movie}</td><td>${movieData.rating}</td><td>${movieData.imdb_url}</td>
+                 <td><button  id="edit">Edit</button> <button id="delete">Delete</button></td> `
+                    datalist.appendChild(addrow)
+                })
+            } catch(e) { console.log("error", e) }
+        }
+       
+        let selectedrow = null
+        let add = document.getElementById("add")
+        let datalist = document.getElementById("datalist")
+        let Id = document.getElementById("idnum")
+        let moviename = document.getElementById("movie")
+        let Rating = document.getElementById("rating")
+        let imdb = document.getElementById("imdb")
+        function clearvalue() {
+            Id.value = ""
+            moviename.value = ""
+            Rating.value = ""
+            imdb.value = ""
+        }
+        document.getElementById("movieform").addEventListener("submit", (e) => {
+            e.preventDefault()
+            if (selectedrow == null) {
+                let addrow = document.createElement('tr');
+                addrow.innerHTML = `
+                <td>${Id.value}</td><td>${moviename.value}</td><td>${Rating.value}</td><td>${imdb.value}</td>
+                 <td><button  id="edit">Edit</button> <button id="delete">Delete</button></td> `
+                datalist.appendChild(addrow)
+                clearvalue()
+            } else {
+                selectedrow.cells[0].innerHTML = Id.value
+                selectedrow.cells[1].innerHTML = moviename.value
+                selectedrow.cells[2].innerHTML = Rating.value
+                selectedrow.cells[3].innerHTML = imdb.value
+                add.innerHTML = "ADD"
+                clearvalue()
+                selectedrow = null
+            }
+        })
+        document.getElementById("datalist").addEventListener("click", (e) => {
+            if (e.target.id == "edit") {
+                selectedrow = e.target.parentElement.parentElement;
+                Id.value = selectedrow.cells[0].innerHTML
+                moviename.value = selectedrow.cells[1].innerHTML
+                Rating.value = selectedrow.cells[2].innerHTML
+                imdb.value = selectedrow.cells[3].innerHTML
+                add.innerHTML = "Edit"
+            } else if (e.target.id == "delete") {
+                e.target.parentElement.parentElement.remove()
+                if(selectedrow == e.target.parentElement.parentElement){
+                    selectedrow=null
+                    clearvalue()
+                    add.innerHTML = "ADD"
+                }else{
+                    selectedrow==null ? add.innerHTML = "ADD" : add.innerHTML = "Edit"
+                }
+            }
+        })
+    </script>
+</body>
+</html>

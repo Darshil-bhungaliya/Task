@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+<body>
+    <label for="qty">Quantity : </label>
+    <input id="qty" type="number" min="0" onchange="qtychange(this)">
+    <br>
+    <br>
+    <div id="showbtn">
+        <button class="btncontainer"></button>
+        <br>
+        <button class="btncontainer"></button>
+        <br>
+        <button class="btncontainer"></button>
+        <br>
+        <button class="btncontainer"></button>
+
+        <button id="viewmore">View More</button>
+
+    </div>
+    <script>
+        // let showbtn = document.getElementById("showbtn")
+        // let addclass = 0
+        // let obj = [{ quantity: 2, diss: 50 }, { quantity: 5, diss: 80 }, { quantity: 7, diss: 100 }, { quantity: 9, diss: 120 }]
+        // for(let x of obj){
+        //     let btn = document.createElement("button")
+        //     let br = document.createElement("br")
+        //     btn.classList = "hidden"
+        //     btn.value = x.quantity
+        //     btn.innerHTML = `Quantity: ${x.quantity} diss : ${x.diss}`
+        //     showbtn.appendChild(btn)
+        //     showbtn.appendChild(br)
+        // }
+        let viewmore = document.getElementById("viewmore")
+        let initialbtn = 2;
+        let hidebutton = document.querySelectorAll(".btncontainer")
+        let qty = document.getElementById("qty")
+        window.addEventListener("load", () => {
+            for (let i = initialbtn; i < 4; i++) {
+                hidebutton[i].classList = "hidden"
+            }
+            viewmore.addEventListener("click", () => {
+                for (let i = initialbtn; i < hidebutton.length; i++) {
+                    hidebutton  [i].classList = "btncontainer"
+                }
+                viewmore.classList = "hidden"
+            })
+        })
+        let obj = [{ quantity: 2, diss: 50 }, { quantity: 5, diss: 80 }, { quantity: 7, diss: 100 }, { quantity: 9, diss: 120 }]
+        for (let i = 0; i < obj.length; i++) {
+            hidebutton[i].innerHTML = `Quantity : ${obj[i].quantity}  diss : ${obj[i].diss}`
+            hidebutton[i].value = obj[i].quantity
+        }
+        function qtychange() {
+            for (let i = 0; i < hidebutton.length; i++) {
+                if (qty.value == hidebutton[i].value) {
+                    hidebutton[i].style.backgroundColor = "yellow"
+                    hidebutton[i].classList = "btncontainer"
+                } else if (qty.value >= hidebutton[i].value) {
+                    hidebutton[i].classList = "hidden"
+                } else if (qty.value <= hidebutton[i].value) {
+                    hidebutton[i].style.backgroundColor = ""
+                }
+            }
+            if(hidebutton.length<2){
+                viewmore.classList = "hidden"
+            }
+        }
+    </script>
+</body>
+
+</html>

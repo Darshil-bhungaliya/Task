@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    table,
+    th,
+    td {
+        margin-top: 30px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 40px;
+    }
+</style>
+
+<body>
+    <form id="movieform">
+        <label for="idnum"><b>Id :</b></label>
+        <input type="number" id="idnum">
+        <label for="movie"><b>Movie Name:</b></label>
+        <input type="text" id="movie">
+        <label for="rating"><b>Rating :</b></label>
+        <input type="number" id="rating">
+        <label for="imdb"><b>imdb_url :</b></label>
+        <input type="text" id="imdb">
+        <button type="submit" id="add">ADD</button>
+    </form>
+    <div id="showdata">
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Movie Name</th>
+                    <th>Rating</th>
+                    <th>imdb_url</th>
+                    <th>EDIT/DELETE</th>
+                </tr>
+            </thead>
+            <tbody id="data">
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let add = document.getElementById("add")
+        document.getElementById("movieform").addEventListener("submit",function submitfn(e){
+            e.preventDefault()
+            let table = document.getElementById("tab").getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            let cell1 = newRow.insertCell(0);
+            let cell2 = newRow.insertCell(1);
+            let cell3 = newRow.insertCell(2);
+            let cell4 = newRow.insertCell(3);
+            let cell5 = newRow.insertCell(4);
+            cell1.innerHTML = document.getElementById("idnum").value;
+            cell2.innerHTML = document.getElementById("movie").value;
+            cell3.innerHTML = document.getElementById("rating").value;
+            cell4.innerHTML = document.getElementById("imdb").value;
+            cell5.innerHTML = '<button id="edit-btn">Edit</button> <button id="delete-btn">Delete</button>';
+
+            let editBtn = cell5.querySelector('#edit-btn');
+            let deleteBtn = cell5.querySelector('#delete-btn');
+
+            editBtn.addEventListener('click', function (e) {
+                document.getElementById("idnum").value = cell1.innerHTML
+                document.getElementById("movie").value = cell2.innerHTML
+                document.getElementById("rating").value = cell3.innerHTML
+                document.getElementById("imdb").value = cell4.innerHTML
+                add.innerHTML = "Edit";
+                let rowedit = e.target.parentElement.parentElement;
+                if (rowedit) {
+                    document.getElementById("add").addEventListener("click", function (e) {
+                        e.preventDefault()
+                        rowedit.cells[0].innerHTML = document.getElementById("idnum").value;
+                        rowedit.cells[1].innerHTML = document.getElementById("movie").value;
+                        rowedit.cells[2].innerHTML = document.getElementById("rating").value;
+                        rowedit.cells[3].innerHTML = document.getElementById("imdb").value;
+                        add.innerHTML = "Add";
+                        document.getElementById("idnum").value = ""
+                        document.getElementById("movie").value = ""
+                        document.getElementById("rating").value = ""
+                        document.getElementById("imdb").value = ""
+                        rowedit = ""
+                    })
+                }else{
+                    submitfn()
+                }
+            });
+            deleteBtn.addEventListener('click', function () {
+                table.deleteRow(newRow.rowIndex - 1);
+            });
+
+            // document.getElementById("idnum").value = ""
+            // document.getElementById("movie").value = ""
+            // document.getElementById("rating").value = ""
+            // document.getElementById("imdb").value = ""
+        })
+
+        fetch("https://dummyapi.online/api/movies")
+            .then(response => response.json())
+            .then(json => {
+                let data = json.slice(0, 5);
+                var temp = "";
+                data.forEach((itemData) => {
+                    temp += "<tr>";
+                    temp += "<td>" + itemData.id + "</td>";
+                    temp += "<td>" + itemData.movie + "</td>";
+                    temp += "<td>" + itemData.rating + "</td>";
+                    temp += "<td>" + itemData.imdb_url + "</td>";
+                    temp += "<td>" + '<button id="edit-btn">Edit</button> <button id="delete-btn">Delete</button>' + "</td></</tr>";
+                });
+                document.getElementById('data').innerHTML = temp;
+            })
+    </script>
+</body>
+</html>

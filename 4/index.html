@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    table,
+    th,
+    td {
+        margin-top: 30px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 40px;
+    }
+</style>
+
+<body>
+    <form>
+        <label for="rating"><b>Id :</b></label>
+        <input type="number" id="idnum">
+        <label for="movie"><b>Movie Name:</b></label>
+        <input type="text" id="movie">
+        <label for="rating"><b>Rating :</b></label>
+        <input type="number" id="rating">
+        <label for="rating"><b>imdb_url :</b></label>
+        <input type="text" id="imdb">
+        <button type="submit" id="add">ADD</button>
+    </form>
+    <div id="showdata">
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Movie Name</th>
+                    <th>Rating</th>
+                    <th>imdb_url</th>
+                    <th>EDIT/DELETE</th>
+                </tr>
+            </thead>
+            <tbody id="data">
+                <!-- <tr>
+                    <td id="tbid"></td>
+                    <td id="tbmovie"></td>
+                    <td id="tbrating"></td>
+                    <td id="tbimdb"></td>
+                    <td></td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let tbid = document.getElementById("tbid")
+        let tbmovie = document.getElementById("tbmovie")
+        document.getElementById("add").addEventListener("click", (e) => {
+            e.preventDefault()
+            const table = document.getElementById("tab").
+                getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+            cell1.innerHTML = document.getElementById("idnum").value;
+            cell2.innerHTML = document.getElementById("movie").value;
+            // tbid.innerText = document.getElementById("idnum").value;
+            // tbmovie.innerText = document.getElementById("movie").value;
+            // tbrating.innerText = document.getElementById("rating").value;
+            // tbimdb.innerText = document.getElementById("imdb").value;
+        })
+
+        fetch("https://dummyapi.online/api/movies")
+            .then(response => response.json())
+            .then(json => {
+                <!-- console.log(json.slice(0, 5)) -->
+                let data = json.slice(0, 5);
+                var temp = "";
+                data.forEach((itemData) => {
+                    temp += "<tr>";
+                    temp += "<td>" + itemData.id + "</td>";
+                    temp += "<td>" + itemData.movie + "</td>";
+                    temp += "<td>" + itemData.rating + "</td>";
+                    temp += "<td>" + itemData.imdb_url + "</td>";
+                    temp += "<td>" + "<button>Edit</button> <button>Delete</button>" + "</td></</tr>";
+                });
+                document.getElementById('data').innerHTML = temp;
+            })
+
+
+    </script>
+</body>
+
+</html>

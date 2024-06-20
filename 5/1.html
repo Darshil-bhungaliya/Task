@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+<body>
+    <label for="qty">Quantity : </label>
+    <input id="qty" type="number" min="0" onchange="qtychange(this)">
+    <br>
+    <br>
+    <div id="showbtn">
+        <!-- <button class="btncontainer"></button>
+        <br>
+        <button class="btncontainer"></button>
+        <br>
+        <button class="btncontainer"></button>
+        <br>
+        <button class="btncontainer"></button>
+
+        <button id="viewmore">View More</button> -->
+
+    </div>
+    <script>
+        let showbtn = document.getElementById("showbtn")
+        let array = []
+        let initialbtn = 2;
+        let obj = [{ quantity: 2, diss: 50 }, { quantity: 5, diss: 80 }, { quantity: 7, diss: 100 }, { quantity: 9, diss: 120 }]
+        for (let x of obj) {
+            let btn = document.createElement("button")
+            let br = document.createElement("br")
+            btn.classList = "btncontainer"
+            btn.value = x.quantity
+            btn.innerHTML = `Quantity: ${x.quantity} diss : ${x.diss}`
+            array.push(btn);
+        }
+        for (let i = 0; i < array.length; i++) {
+            showbtn.appendChild(array[i])
+        }
+        window.addEventListener("load", () => {
+            for (let i = initialbtn; i < array.length; i++) {
+                array[i].classList = "hidden"
+            }
+            let viewmore = document.createElement("button")
+
+            viewmore.innerHTML = "view more"
+            showbtn.appendChild(viewmore)
+
+            viewmore.addEventListener("click", () => {
+                for (let i = initialbtn; i < array.length; i++) {
+                    array[i].classList = "btncontainer"
+                }
+                viewmore.classList = "hidden"
+            })
+        })
+
+        function qtychange() {
+            for (let i = 0; i < array.length; i++) {
+                if (qty.value == array[i].value) {
+                    array[i].style.backgroundColor = "yellow"
+                    array[i].classList = "btncontainer"
+
+                } else if (qty.value >= array[i].value) {
+                    array[i].classList = "hidden"
+                    initialbtn++
+                    array[i + 2] ? array[i + 2].classList = "btncontainer" : null
+
+                } else if (qty.value <= array[i].value) {
+                    array[i].style.backgroundColor = ""
+                }
+            }
+            if (array.length < 2) {
+
+            }
+        }
+
+    </script>
+</body>
+
+</html>

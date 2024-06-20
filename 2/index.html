@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="firstcontainer">
+
+        <form id="firstform">
+            <label for="1st">1st Input</label>
+            <input type="number" id="1st" name="1st Input">
+
+            <label for="2nd">2nd Input</label>
+            <input type="number" id="2nd" name="2nd Input">
+
+            <label for="conditions">Conditions</label>
+            <select name="conditions" id="conditions">
+                <option value="&gt;">Greater than</option>
+                <option value="&lt;">Less than</option>
+                <option value="&equals;">Equal to</option>
+            </select>
+            <div id="clearform">
+                <button type="button" id="and" value="and">AND</button>
+                <button type="button" id="or" value="or">OR</button>
+            </div>
+
+
+            <input type="submit" value="submit" id="submit">
+        </form>
+
+
+
+    </div>
+    <div id="secondcontainer">
+        <p id="output"></p>
+        <p id="finaloutput"></p>
+    </div>
+    <script>
+        let first = document.getElementById("1st");
+        let second = document.getElementById("2nd");
+        let select = document.getElementById("conditions");
+        let submit = document.getElementById("submit");
+        let output = document.getElementById("output");
+        let finaloutput = document.getElementById("finaloutput");
+
+
+        submit.addEventListener("click", getvalue);
+
+        function getvalue(event) {
+            event.preventDefault();
+            if (select.value == ">") {
+                output.innerText = +first.value > +second.value;
+
+                if (finaloutput.innerText) {
+                    let a = finaloutput.innerText.split(" ");
+                    if (a.includes("&&")) {
+                        
+                        finaloutput.innerText.split(" ").shift();
+                        finaloutput.innerText = finaloutput.innerText && output.innerText
+                        
+                    } else if (a.includes("||")) {
+                        
+                        finaloutput.innerText.split(" ").shift();
+                        
+                        finaloutput.innerText = Boolean(finaloutput.innerText) || Boolean(output.innerText)
+                       
+                    }
+                }
+
+            }
+            else if (select.value == "<") {
+                output.innerText = +first.value < +second.value;
+
+                if (finaloutput.innerText) {
+                    let a = finaloutput.innerText.split(" ");
+                    if (a.includes("&&")) {
+                        
+                        finaloutput.innerText.split(" ").shift();
+                        finaloutput.innerText = finaloutput.innerText && output.innerText
+                        
+                    } else if (a.includes("||")) {
+                        
+                        finaloutput.innerText.split(" ").shift();
+
+                                           
+                        finaloutput.innerText = Boolean(finaloutput.innerText) || Boolean(output.innerText)
+
+                        
+                    }
+                }
+
+            }
+            else if (select.value == "=") {
+                output.innerText = +first.value == +second.value;
+
+                if (finaloutput.innerText) {
+                    let a = finaloutput.innerText.split(" ");
+                    if (a.includes("&&")) {
+                        
+                        finaloutput.innerText.split(" ").shift();
+                        finaloutput.innerText = finaloutput.innerText && output.innerText
+                        
+                    } else if (a.includes("||")) {
+                        
+                        finaloutput.innerText.split(" ").shift();
+                        
+                        finaloutput.innerText = Boolean(finaloutput.innerText) || Boolean(output.innerText)
+                       
+                    }
+                }
+            }
+        }
+
+        let button = document.getElementById("clearform");
+        let and = document.getElementById("and");
+        let or = document.getElementById("or");
+
+        button.addEventListener("click", clearform);
+        and.addEventListener("click", andop);
+        or.addEventListener("click", orop);
+
+        function clearform() {
+            first.value = "";
+            second.value = "";
+            select.value = "";
+        }
+
+        function andop() {
+            finaloutput.innerText = output.innerText + " " + "&&";
+
+        }
+
+        function orop() {
+            finaloutput.innerText = output.innerText + " " + "||";
+        }
+    </script>
+</body>
+
+</html>

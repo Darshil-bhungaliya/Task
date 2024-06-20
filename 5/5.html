@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .highlight {
+        background-color: yellow;
+    }
+
+    button {
+        display: block;
+        margin: 10px;
+    }
+</style>
+
+<body>
+    <label for="qty">quantity : </label>
+    <input id="qty" type="number" min="0" onchange="qtychange()">
+    <div id="showbtn"></div>
+    <button id="viewmore" onclick="viewmore1()">viewmore</button>
+    <script>
+        let obj = [{ quantity: 2, diss: 50 }, { quantity: 4, diss: 50 }, { quantity: 5, diss: 50 }]
+        obj.sort((a, b) => a.quantity - b.quantity)
+        let showobj = 2;
+        obj.length > 1 ? showobj = 2 : showobj = 1
+        let highlightobj = null;
+        let finalobj = obj
+        let qty = document.getElementById("qty")
+        let viewmore = document.getElementById('viewmore');
+        function defultobj() {
+            let objlist = document.getElementById('showbtn');
+            objlist.innerHTML = "";
+
+            for (let i = 0; i < showobj; i++) {
+                let obj1 = finalobj[i];
+                if (!finalobj[i]) return
+                let btn = document.createElement('button');
+                btn.addEventListener("click", clickbtn)
+                btn.value = obj1.quantity;
+                btn.innerHTML = `quantity: ${obj1.quantity}, diss: ${obj1.diss}`;
+                if (highlightobj === obj1) {
+                    btn.classList.add('highlight');
+                }
+                objlist.appendChild(btn);
+            }
+            if (showobj >= finalobj.length) {
+                viewmore.style.display = 'none';
+            } else {
+                viewmore.style.display = 'block';
+            }
+        }
+        defultobj()
+        function qtychange() {
+            let finalqty = +qty.value
+            highlightobj = null;
+            showobj = 2
+            finalobj = obj.filter((x) => x.quantity >= finalqty)
+            if (finalobj.length > 0) {
+                highlightobj = finalobj.find((x) => x.quantity === finalqty)
+            } else {
+                viewmore.style.display = 'none';
+            }
+            if (finalobj.length == 1) viewmore.style.display = 'none';
+            defultobj()
+        }
+        function clickbtn() {
+            qty.value = +this.value
+            qtychange()
+        }
+        function viewmore1() {
+            showobj = finalobj.length
+            viewmore.style.display = 'none';
+            defultobj()
+        }
+    </script>
+</body>
+
+</html>
